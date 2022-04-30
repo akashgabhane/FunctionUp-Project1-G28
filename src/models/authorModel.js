@@ -5,21 +5,24 @@ const authorSchema = new mongoose.Schema(
   {
     fname: {
       type: String,
-      required: true,
+      required:  [true, 'plese enter name buddy'],
+      
     },
     lname: {
       type: String,
-      required: true,
+      required: [true, ' last name is imprt'],
+      
     },
 
     title: {
       type: String,
-      required: true,
+      required: [true, 'title can only be Mr/Mrs/Miss'],
       enum: ["Mr", "Mrs", "Miss"],
+
     },
     email: {
       type: mongoose.SchemaTypes.Email,
-      required: true,
+      required: [true, 'email should be prsent'],
       unique: true,
     },
     password: {

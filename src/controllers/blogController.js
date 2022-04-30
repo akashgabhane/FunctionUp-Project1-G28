@@ -2,10 +2,37 @@ const {count} = require("console")
 const blogModel = require("../models/blogModel");
 const authorModel = require("../models/authorModel");
 
+
+
+
+
+const handleError= (err) =>{
+
+  console.log(err.message, err.code)
+   let errors = {title: '',body: '', category: ''}
+
+  
+
+ if (err.message.includes('blog validation failed')){
+
+  Object.values(err.errors).forEach(({properties}) => {
+   errors[properties.path]= properties.message;
+  });
+
+  return errors;
+ }}
+
 //------------------------------------------------Solution 2 ------------------------------------------------------------------------
 const createblog = async function (req, res) {
 try{
   let data = req.body;
+
+  console.log(data.category)
+
+  // if(!data.category){
+
+  //  return res.send("category is missing")
+  // }
   authorid = data.authorId;
 
   const k = await authorModel.find({ _id: authorid });
@@ -17,7 +44,10 @@ try{
   let blog = await blogModel.create(data);
   res.status(200).send({ data: data });
  } catch (error) {
-   return res.status(500).send({ error: error.message });
+
+  const errors = handleError(error)
+  res.send({errors})
+  //  return res.status(500).send({ error: error.message });
  }
 };
 
@@ -58,9 +88,9 @@ const updateBlog = async function (req, res) {
           a.push(x[i].tags);
         }
         a.push(data.tags);
-       console.log(a)
+       
         let b = a.flat()
-       console.log(b)
+      
         if (data.tags) {
           let updatedBlog = await blogModel.findOneAndUpdate(
             { _id: blogId },
@@ -119,7 +149,7 @@ try{
      return res.status(404).send({msg: "no blog found with the id match"})
    }
  
-   let match= await blogModel.findOneAndUpdate({_id:id}, {$set: {isDeleted: true}})
+   let match= await blogModel.findOneAndUpdate({_id:id}, {$set: {isDeleted: true}},{ new: true })
    res.status(200).send(match)
 }
    catch (error) {
