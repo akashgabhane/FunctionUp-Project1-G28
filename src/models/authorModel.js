@@ -5,7 +5,7 @@ const authorSchema = new mongoose.Schema(
   {
     fname: {
       type: String,
-      required:[true, 'plese enter your first name buddy']
+      required:[true, 'please enter your first name buddy']
     },
     lname: {
       type: String,

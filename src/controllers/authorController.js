@@ -7,7 +7,8 @@ const handleError= (err) =>{
 let errors = { fname: '',lname: '', title: '', email:'',password:''}
 
 if(err.code ===11000){
-    errors.email =' the email is already registered'
+    errors.email ='the email is already registered'
+    Object.keys(errors).forEach(k => (!errors[k] && errors[k] !== undefined) && delete errors[k]);
     return errors;
   }
 
