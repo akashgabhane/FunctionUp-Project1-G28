@@ -201,7 +201,7 @@ let password = req.body.password;
 
 let match = await authorModel.findOne({email:email,password:password})
 if(!match){
-  res.status(400).send({msg: "Email/Password is incorrect"})
+  res.status(400).send({status:false,msg: "Email/Password is incorrect"})
 }else{
 
   let token = await jwt.sign({
