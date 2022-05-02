@@ -30,11 +30,11 @@ try{
     let data = req.body
     
     let author = await AuthorModel.create(data)
-    res.status(201).send({ data: author })
+    res.status(201).send({status:true, data: author })
   
 }catch (error) {
   const errors = handleError(error)
-  res.status(400).send({errors})
+  res.status(400).send({status:false,errors})
   }
 }
 

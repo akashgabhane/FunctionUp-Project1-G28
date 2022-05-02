@@ -18,7 +18,7 @@ let authentication = async function (req, res, next) {
       next();
     }
   } catch (err) {
-    res.status(500).send({ msg: "Error", error: err.message });
+    res.status(500).send({status:false, msg: "Error", error: err.message });
   }
 };
 
@@ -49,7 +49,7 @@ let authorisation = async function (req, res, next) {
       let find= await blogModel.find(data)  
       if (find.length<=0)
       {
-        return res.status(404).send({msg: "no blog found with the id match"})
+        return res.status(404).send({status:false,msg: "no blog found with the id match"})
       }
       let validation= decodedToken.authorId
       let loginAuthorid = await blogModel.find({$and:[data,{validation}]}).select({authorId:1})
@@ -61,7 +61,7 @@ let authorisation = async function (req, res, next) {
 
     next();
   } catch (err) {
-    res.status(500).send({ msg: "Error", error: err.message });
+    res.status(500).send({status:false, msg: "Error", error: err.message });
   }
 };
 

@@ -30,19 +30,19 @@ try{
   
   let authorid = data.authorId;
   if (!authorid){
-    return res.status(400).send({ error: "please provide Author Id"})
+    return res.status(400).send({status:false, error: "please provide Author Id"})
    }
   const find = await authorModel.find({ _id: authorid });
   
   if (find.length <= 0) {
-    return res.status(400).send("please provide valid user");
+    return res.status(400).send({status:false,error:"please provide valid user"});
   }
 
   let blogCreated = await blogModel.create(data);
-  res.status(201).send({ data: blogCreated });
+  res.status(201).send({status:true, data: blogCreated });
  } catch (error) {
   const errors = handleError(error)
-  res.status(400).send({errors})
+  res.status(400).send({status:false,errors})
  }
 };
 
@@ -52,20 +52,20 @@ const getdata = async function (req, res) {
 try{
 
   let data = req.query;
-  if ( Object.keys(data).length == 0){
-   return res.status(400).send({ msg: "Input Missing"})
-  }
+  // if ( Object.keys(data).length == 0){
+  //  return res.status(400).send({status:false, msg: "Input Missing"})
+  // }
 
   let find = await blogModel.find({$and:[{ isDeleted: false },{ isPublished: true},data]});
   if (find.length <= 0){
-    return res.status(404).send({ error: "No match found for the given criteria" });
+    return res.status(404).send({status:false, error: "No match found for the given criteria" });
   }
 
   let findWithAuthorDetails = await blogModel.find({$and:[{ isDeleted: false },{ isPublished: true},data]}).populate("authorId");
-  res.status(200).send({data: findWithAuthorDetails});
+  res.status(200).send({status:true,data: findWithAuthorDetails});
 
  }catch (error) {
-   return res.status(500).send({ error: error.message });
+   return res.status(500).send({status:false, error: error.message });
  }
 };
 
@@ -141,15 +141,15 @@ const updateBlog = async function (req, res) {
           { $set: { title: req.body.title, body: req.body.body, isPublished:true, publishedAt: Date.now() } },
           { new: true, upsert: true }
         );
-        return res.status(200).send({ msg: "Blog Updated Successfully", updatedBlog });
+        return res.status(200).send({status:true, msg: "Blog Updated Successfully", updatedBlog });
       } else {
-        return res.status(404).send({ error: "Blog does not exists" });
+        return res.status(404).send({status:false, error: "Blog does not exists" });
       }
     } else {
-      return res.status(404).send({ error: "Blog Id Not Found" });
+      return res.status(404).send({ status:false,error: "Blog Id Not Found" });
     }
   } catch (error) {
-    return res.status(500).send({ error: error.message });
+    return res.status(500).send({status:false, error: error.message });
   }
 };
 
@@ -163,14 +163,14 @@ try{
    let find= await blogModel.find({$and:[{_id:id}, {isDeleted: false}]})
    if (find.length<=0)
    {
-     return res.status(404).send({msg: "no blog found with the id match"})
+     return res.status(404).send({status:false,msg: "no blog found with the id match"})
    }
  
    let match= await blogModel.findOneAndUpdate({_id:id}, {$set: {isDeleted: true,deletedAt: Date.now()}},{ new: true, upsert: true })
-   res.status(200).send(match)
+   res.status(200).send({status:true,data:match})
 }
    catch (error) {
-      return res.status(500).send({ error: error.message });
+      return res.status(500).send({status:false, error: error.message });
     }
  }
 
@@ -183,10 +183,10 @@ try{
     let key=req.key[0].authorId
 
    let deleted = await blogModel.updateMany({$and:[{authorId:key},data]},{isDeleted: true, deletedAt: Date.now()},{ new: true});
-    return res.status(200).send({ status: true, data: deleted });
+    return res.status(200).send({status:true,data: deleted });
  
   } catch (error) {
-    return res.status(500).send({ error: error.message });
+    return res.status(500).send({status:false, error: error.message });
   }
 };
 
@@ -210,7 +210,7 @@ if(!match){
   },
   "project1-28"
   );
-  res.status(201).send({ status: true, data: token });
+  res.status(201).send({status: true, data: token });
 };
 }
 
