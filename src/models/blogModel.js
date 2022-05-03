@@ -5,49 +5,60 @@ const blogSchema = new mongoose.Schema(
   {
     title: {
       type: String,
+      trim:true,
       required: [true, 'title should be present']
     },
 
     body: {
       type: String,
+      trim:true,
       required: [true, 'body should have content']
     },
 
-    tags: [String],
+    tags: [
+      {type: String,
+       trim:true
+      }
+    ],
 
     category: {
-      type: [String],
-      validate:[v => Array.isArray(v) && v.length > 0,'Category should be present']
+      type: String,
+      trim:true,
+      required: [true,'Category should be present']
   },
-    subcategory: {
-      type: [String],
-    },
+    subcategory: [
+      {type: String,
+       trim:true
+      }
+    ],
 
     createdAt: Date,
     updatedAt: Date,
-    deletedAt: Date,
+
+    deletedAt:{
+      type: Date
+    },
 
     isDeleted: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     publishedAt: {
-      type: Date,
+      type: Date
     },
 
     isPublished: {
       type: Boolean,
-      default: false,
+      default: false
     },
 
     authorId: {
       type: ObjectId,
       required: true,
-      ref: "Author",
-    },
-  },
-  { timestamps: true }
+      ref: "Author"
+    }
+  },  { timestamps: true }
 );
 
 module.exports = mongoose.model("blog", blogSchema);

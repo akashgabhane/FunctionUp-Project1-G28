@@ -46,13 +46,13 @@ let authorisation = async function (req, res, next) {
       if (Object.keys(data) == 0) {
         return res.status(400).send({ status: false, msg: "Input Missing" });
       }
-      let find= await blogModel.find(data)  
+      let find= await blogModel.find({$and:[data,{isDeleted:false}]})  
       if (find.length<=0)
       {
         return res.status(404).send({status:false,msg: "no blog found with the id match"})
       }
       let validation= decodedToken.authorId
-      let loginAuthorid = await blogModel.find({$and:[data,{validation}]}).select({authorId:1})
+      let loginAuthorid = await blogModel.find({$and:[data,{authorId:validation}]}).select({authorId:1})
       if(loginAuthorid<=0){
         return res.status(403).send({status: false,msg: "You are not Authorised"});
       }
